@@ -1,36 +1,26 @@
 import requests
 
-# This scripts is getting data from CoinDesk API
 
-url = "https://api.coindesk.com/v1/bpi/currentprice.json"
+def show_current_price(currency_type):
+    currency_types = {
+        1: "USD",
+        2: "GBP",
+        3: "EUR"
+    }
 
+    if currency_type not in currency_types.keys():
+        print("Something Went Wrong, Please Try Again...")
 
-def showUsd():
-    """
-    This function sends GET request to CoinDesk API and show Bitcoin's current price in USD.
-    """
-    response = requests.get(url)  # sending request to url
-    jsonResponse = response.json()  # saving response as JSON
-    time = jsonResponse["time"]["updated"]  # getting time from response
-    code = jsonResponse["bpi"]["USD"]["code"]  # getting currency code from response
-    rate = jsonResponse["bpi"]["USD"]["rate"]  # getting price in USD from response.
+        return
 
-    print(time, code, rate)
+    response = requests.get("https://api.coindesk.com/v1/bpi/currentprice.json")  # sending request to url
+    json_response = response.json()  # saving response as JSON
 
-
-def showGbp():
-    response = requests.get(url)  # sending request to url
-    jsonResponse = response.json()  # saving response as JSON
-    time = jsonResponse["time"]["updated"]  # getting time from response
-    code = jsonResponse["bpi"]["GBP"]["code"]  # getting currency code from response
-    rate = jsonResponse["bpi"]["GBP"]["rate"]  # getting price in USD from response.
+    time = json_response["time"]["updated"]
+    code = json_response["bpi"][currency_types[currency_type]]["code"]  # getting currency code from response
+    rate = json_response["bpi"][currency_types[currency_type]]["rate"]  # getting price in USD from response.
 
     print(time, code, rate)
-
-
-def showEuro():
-    # Your code will go here, remove the pass once you are done editing your code
-    pass
 
 
 if __name__ == "__main__":
@@ -40,18 +30,7 @@ if __name__ == "__main__":
             print("2. Show Bitcoin Price in GBP.")
             print("3. Show Bitcoin Price in EUR.")
             userInput = int(input("Please Enter Your Choice: "))
-            if userInput == 1:
-                showUsd()
-                break
-            elif userInput == 2:
-                showGbp()
-                break
-            elif userInput == 3:
-                showEuro()
-                break
-            else:
-                print("Something Went Wrong, Please Try Again...")
-                continue
+            show_current_price(userInput)
         except requests.RequestException:
             print("Something Went Wrong, Quitting...")
             break
